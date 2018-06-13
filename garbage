@@ -281,11 +281,3 @@ $('.menuListSize').removeClass('visible');
 
 
 
-$('#Fsize').on('click',function(event){
-    event.stopPropagation();
-    $(this).keydown(function(event){
-        if(event.which==13){
-            $("#toolbar").trigger('click');
-        }
-    })
-})

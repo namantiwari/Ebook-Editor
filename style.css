@@ -10,43 +10,6 @@ li{
     padding: 0;
 }
 
-textarea{
-    border-style:dashed;
-}
-#text_holder{
-    border-style:dashed;
-    border-width: 1px;
-    width: 100px;
-    height:100px;
-    resize:both;
-    overflow: auto;
-    margin-left: 0px;
-    margin-top: 0px;
-    
-
-}
-#text_holder1{
-    border-style:dashed;
-    border-width: 1px;
-    width: 100px;
-    height:100px;
-    resize:both;
-    overflow: auto;
-    margin-left: 0px;
-    margin-top: 0px;
-    
-    
-
-}
-
-p{
-    border-style:none;
-    padding:0;
-    border: none;
-    margin:0;
-   
-}
-
 #main{
     width:100%;
     height:20000px;
@@ -156,6 +119,7 @@ input#Fstyle{
     width: 100%;
     height:30px;
     padding: 1px;
+    z-index: 10;
     
     
 }
@@ -163,7 +127,15 @@ input#Fstyle{
     width: 100%;
     height:30px;
     padding: 1px;
+    z-index: 10;
     
+}
+#header{
+    top:0;
+    position: fixed;
+    background-color: white;
+    width:100%;
+    z-index: 10;
 }
 
 
