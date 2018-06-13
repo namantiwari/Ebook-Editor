@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+        <script src="jquery-resizable.js"></script>
+        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="style_color.css">
+    </head>
+    <body>
+        <div id="header">
+        <div id="widgetbar">
+            <button id="new_page" style="float: left" class="widget_button">New Page</button>
+            <button id="delete_page" style="float: left" class="widget_button">Delete Page</button>
+            <div id="text_button">
+            <button id="new_button" style="float: left" class="widget_button">New</button>
+            <button id="delete_button" style="float: left" class="widget_button">Delete</button>
+            </div>
+            <button id='image_button' style="float: left" class="widget_button">Image</button>
+            <button id="video_button" style="float: left" class="widget_button">Video</button>
+            <button id="tables_button" style="float: left" class="widget_button">Table</button>
+            <button id="slide_button" style="float: left" class="widget_button">SlideShow</button>
+            
+        </div>
+        <div id="toolbar">
+            <ul>
+                <li style="float: left"><button id="b_button" class="tool_button">B</button></li>
+                <li style="float: left"><button id="i_button" class="tool_button">I</button></li>
+                <li style="float: left"><button id="u_button" class="tool_button">U</button></li>
+                <li style="float: left">
+                    <button id="Fsize_button" class="tool_button_size">
+                        <input id="Fsize" type="number" width="10px">
+                    </button>
+                    <div class="menuListSize  invisible">
+                        <ul class="menuSize  invisible">
+                            <li class="sizeable"><button id="setsize" class="size-button invisible">6</button></li>
+                            <li class="sizeable"><button id="setsize" class="size-button invisible">8</button></li>
+                            <li class="sizeable"><button id="setsize" class="size-button invisible">10</button></li>
+                            <li class="sizeable"><button id="setsize" class="size-button invisible">12</button></li>
+                            <li class="sizeable"><button id="setsize" class="size-button invisible">14</button></li>
+                            <li class="sizeable"><button id="setsize" class="size-button invisible">16</button></li>
+                            <li class="sizeable"><button id="setsize" class="size-button invisible">18</button></li>
+                            <li class="sizeable"><button id="setsize" class="size-button invisible">20</button></li>
+                            <li class="sizeable"><button id="setsize" class="size-button invisible">22</button></li>
+                            <li class="sizeable"><button id="setsize" class="size-button invisible">44</button></li>
+                            <li class="sizeable"><button id="setsize" class="size-button invisible">60</button></li>
+                            <li class="sizeable"><button id="setsize" class="size-button invisible">75</button></li>
+                            <li class="sizeable"><button id="setsize" class="size-button invisible">96</button></li>
+                        </ul>
+                    </div>
+                </li>
+                <li style="float: left">
+                    <button id="Fstyle_button" class="tool_button_style">
+                        <input id="Fstyle" type="text" width="10px">
+                    </button>
+                    <div class="menuListStyle  invisible">
+                        <ul class="menuStyle  invisible">
+                            <li class="styleable"><button id="setstyle" class="style-button  invisible">Arial</button></li>
+                            <li class="styleable"><button id="setstyle" class="style-button  invisible">Helvetica</button></li>
+                            <li class="styleable"><button id="setstyle" class="style-button  invisible">Times New Roman</button></li>
+                            <li class="styleable"><button id="setstyle" class="style-button  invisible">Courier New</button></li>
+                            <li class="styleable"><button id="setstyle" class="style-button  invisible">Verdana</button></li>
+                            <li class="styleable"><button id="setstyle" class="style-button  invisible">Georgia</button></li>
+                        </ul>
+                    </div>
+                </li>
+                <li><button id="l_align" class="tool_button">LA</button></li>
+                <li><button id="c_align" class="tool_button">CA</button></li>
+                <li><button id="r_align" class="tool_button">RA</button></li>
+            <ul>
+        </div>
+        </div>
+        <div id="main" ondragover="allowdrag(event)" ondrop="onDrop(event)">
+        </div>
+        <script src ="ebook_editor.js"></script>
+    </body>
+</html>
+<!---->

@@ -1,0 +1,170 @@
+ul{
+     list-style-type: none;
+     margin: 0;
+     padding:0;
+
+}
+li{
+    float:left;
+    display: block;
+    padding: 0;
+}
+
+textarea{
+    border-style:dashed;
+}
+#text_holder{
+    border-style:dashed;
+    border-width: 1px;
+    width: 100px;
+    height:100px;
+    resize:both;
+    overflow: auto;
+    margin-left: 0px;
+    margin-top: 0px;
+    
+
+}
+#text_holder1{
+    border-style:dashed;
+    border-width: 1px;
+    width: 100px;
+    height:100px;
+    resize:both;
+    overflow: auto;
+    margin-left: 0px;
+    margin-top: 0px;
+    
+    
+
+}
+
+p{
+    border-style:none;
+    padding:0;
+    border: none;
+    margin:0;
+   
+}
+
+#main{
+    width:100%;
+    height:20000px;
+    border-style:inset;
+    background-color:rgb(196, 196, 196);
+}
+#toolbar{
+    clear:both;
+}
+
+
+input#Fsize{
+    width:60px;
+    padding: 0;
+    border-style: solid;
+    border: 10px;
+}
+input#Fstyle{
+    width:150px;
+    padding: 0;
+    border-style: solid;
+    border-color: lemonchiffon;
+    border: 10px;
+}
+
+.visible{
+    display:block;
+}
+
+.invisible{
+    display:none;
+}
+
+.menuSize{
+    width:40px;
+}
+
+.sizeable{
+    float: none;
+    width:60px;
+
+}
+
+.menuListSize{
+    width:60px;
+    height:150px;
+    padding: 1px 1px;
+    background-color: white;
+    border: 1px;
+    border-style:solid;
+    overflow: auto;
+}
+.size-button{
+    width:60px;
+    background-color: white;
+    border: none;
+    text-align: left;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    cursor: pointer;
+}
+.size-button:hover{
+    background-color: rgb(78, 186, 245);
+}
+
+
+
+.menuStyle{
+    width:200px;
+}
+
+.styleable{
+    float: none;
+    width:200px;
+}
+
+.menuListStyle{
+    width:200px;
+    height:150px;
+    background-color: white;
+    border: 1px;
+    border-style:solid;
+    overflow-y: auto;
+}
+
+.style-button{
+    width:200px;
+    background-color: white;
+    border: none;
+    text-align: left;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    cursor: pointer;
+}
+
+.style-button:hover{
+    background-color: rgb(78, 186, 245);
+}
+
+#toolbar{
+    width: 100%;
+    height:30px;
+    padding: 1px;
+    
+    
+}
+#widgetbar{
+    width: 100%;
+    height:30px;
+    padding: 1px;
+    
+}
+
+
+

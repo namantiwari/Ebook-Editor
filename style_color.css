@@ -1,0 +1,16 @@
+::selection {
+    color: #000;
+    /* WebKit/Blink Browsers */
+    background-color: #b1d7fe;
+}
+
+::-moz-selection {
+    color: #ccc;
+    /* Gecko Browsers */
+    background-color: #b1d7fe;
+}
+
+.editable,
+.editable:focus {
+    outline: 0px solid transparent;
+}

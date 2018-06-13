@@ -1,0 +1,291 @@
+function noDrag(event,s){
+    console.log(event.type);
+    $("#text_holder").draggable("destroy");
+    //$("#text_holder").resizable("destroy");
+    editor.subscribe("editableKeydown", function(data,element){
+        
+        console.log('editable'+data.type);
+    })
+    editor.subscribe("editableDrag", function(data,element){
+
+        console.log(data.type);
+    })
+}
+function Drag(event, s){
+    console.log(event.type);
+    $("#text_holder").draggable();
+    //$("#text_holder").resizable();
+}
+
+
+
+
+
+<p class="editable"></p>
+
+
+
+resize:both; 
+
+
+
+
+$("#main").on("select",function(event){
+    if(event.target.type=="text"){
+        
+        
+    }
+
+});
+
+
+
+
+<input list="fontsize" id="Fsize_button">
+            <datalist id="fontsize">
+                <option value=12>
+                <option value=14>
+                <option value=16>
+                <option value=18>
+                <option value=20>
+            </datalist>
+
+
+
+
+            $('div').on('focus',function(event){
+    if(this.attr('contentEditable')==true){
+        var Id=event.target.id;
+        $(Id).on("select",function(){
+            selection=getSelection(event);
+        })
+    }
+});
+
+
+
+
+
+var Div=$('div[contenteditable="true"]');
+console.log(Div);
+Div.each(function(index,element) {
+    $(element).on("mouseup keyup", function(){
+        getSelection();
+
+        console.log("eventlistener  "+select.toString());
+    })
+});
+
+
+
+
+
+
+/*var new_select=document.getSelection();
+        new_select.removeAllRanges();
+        new_select.addRange(range);*/
+
+
+
+
+
+
+
+medium-editor
+
+
+var editor = new MediumEditor('.editable', {
+    toolbar: {
+        /* These are the default options for the toolbar,
+           if nothing is passed this is what is used */
+        allowMultiParagraphSelection: false,
+        diffLeft: 0,
+        diffTop: -10,
+        firstButtonClass: 'medium-editor-button-first',
+        lastButtonClass: 'medium-editor-button-last',
+        relativeContainer: null,
+        standardizeSelectionStart: false,
+        static: false,
+        /* options which only apply when static is true */
+        align: 'center',
+        sticky: false,
+        updateOnEmptySelection: false,
+        buttons: [
+            'bold',
+            'italic',
+            'underline',
+            {
+                name: 'h1',
+                action: 'append-h2',
+                aria: 'header type 1',
+                tagNames: ['h2'],
+                contentDefault: '<b>H1</b>',
+                classList: ['custom-class-h1'],
+                attrs: {
+                    'data-custom-attr': 'attr-value-h1'
+                }
+            },
+            {
+                name: 'h2',
+                action: 'append-h3',
+                aria: 'header type 2',
+                tagNames: ['h3'],
+                contentDefault: '<b>H2</b>',
+                classList: ['custom-class-h2'],
+                attrs: {
+                    'data-custom-attr': 'attr-value-h2'
+                }
+            },
+            'quote',
+            'fontsize',
+            'fontname',
+            'fontcolor',
+            'colorPicker'
+        ]
+    },
+    anchor:{
+        /* These are the default options for anchor form,
+           if nothing is passed this is what it used */
+        customClassOption:'naman',
+        customClassOptionText: 'Button',
+        linkValidation: false,
+        placeholderText: 'Paste or type a link',
+        targetCheckbox: false,
+        targetCheckboxText: 'Open in new window'
+    },
+    anchorPreview: {
+        /* These are the default options for anchor preview,
+           if nothing is passed this is what it used */
+        hideDelay: 500,
+        previewValueSelector: 'a'
+    },
+    paste: {
+        /* This example includes the default options for paste,
+           if nothing is passed this is what it used */
+        forcePlainText: true,
+        cleanPastedHTML: false,
+        cleanReplacements: [],
+        cleanAttrs: ['class', 'style', 'dir'],
+        cleanTags: ['meta'],
+        unwrapTags: []
+    },
+    keyboardCommands: {
+        /* This example includes the default options for keyboardCommands,
+           if nothing is passed this is what it used */
+        commands: [
+            {
+                command: 'bold',
+                key: 'B',
+                meta: true,
+                shift: false,
+                alt: false
+            },
+            {
+                command: 'italic',
+                key: 'I',
+                meta: true,
+                shift: false,
+                alt: false
+            },
+            {
+                command: 'underline',
+                key: 'U',
+                meta: true,
+                shift: false,
+                alt: false
+            }
+        ],
+    },
+    autolink:true,
+    imageDragging: false
+    
+});
+
+
+
+
+
+
+$('.menuListSize').removeClass('visible');
+  $('.menuListSize').addClass('invisible');
+  $('.menuSize').removeClass('visible');
+  $('.menuSize').addClass('invisible');
+  $('.size-button').removeClass('visible');
+  $('.size-button').addClass('invisible');
+
+
+
+
+
+
+  if($('.menuListSize,.menuSize,.size-button').hasClass('visible')){
+      console.log("hello world!!")
+    $('.menuListSize,.menuSize,.size-button').removeClass('visible');
+    $('.menuListSize,.menuSize,.size-button').addClass('invisible');
+  }
+
+
+
+
+
+
+  css styles for toolbar and widget bar
+
+  #toolbar{
+    width: 100%;
+    height:30px;
+    padding: 1px;
+    background-color: rgb(199, 240, 242);
+}
+#widgetbar{
+    width: 100%;
+    height:30px;
+    padding: 1px;
+    background-color: rgb(199, 240, 242);
+}
+
+.tool_button{
+    background-color: rgb(199, 240, 242);
+    width: 30px;
+    height: 30px;
+    border-style: outset;
+    text-align: center;
+    text-decoration: none;
+    font-size:16px;
+
+}
+
+.tool_button_size{
+    background-color: rgb(199, 240, 242);
+    width: 100px;
+    height: 30px;
+    border-style: outset;
+    text-align: left;
+    text-decoration: none;
+    font-size:16px;
+
+}
+.tool_button_style{
+    background-color: rgb(199, 240, 242);
+    width: 200px;
+    height: 30px;
+    border-style: outset;
+    text-align: left;
+    text-decoration: none;
+    font-size:16px;
+
+}
+
+
+
+
+
+
+$('#Fsize').on('click',function(event){
+    event.stopPropagation();
+    $(this).keydown(function(event){
+        if(event.which==13){
+            $("#toolbar").trigger('click');
+        }
+    })
+})
