@@ -51,6 +51,35 @@ function changeFontSize(select,s){
     range.insertNode(span);    
 }
 
+function displayResizer(el){
+    var resizer_array=[];
+    var add_left=0;
+    var add_top=0;
+    var resizer=document.getElementById('resizer');
+    resizer.width=el.width;
+    resizer.height=el.height;
+    resizer.top=el.top;
+    resizer.left=el.left;
+    for(var i=0;i<8;i++){
+        if(i<3 && i>=1){
+            add_left=add_left+resizer.width/2;
+        }
+        else if(i>=3 && i<5){
+            add_top=add_top+resizer.height/2;
+        }
+        else if(i>=5 && i<7){
+            add_left=add_left-resizer.width/2;
+        }
+        else if(i==7){
+            add_top=add_top-resizer.height/2;
+        }
+        resizer_array[i]=document.getElementById('c_'+(i+1));
+        resizer_array[i].top=resizer.top+add_top;
+        resizer_array[i].left=resizer.left+add_left;
+        $('#'+resizer_array[i].id).css('display','block');
+    }
+    $('#resizer').css('display','block');   
+}
 
 window.currFocus = document;
 
@@ -195,11 +224,9 @@ $('#widgetbar').on('click',function(event){
         delete_item=0;
 
         if(count_page>1){
-            $('html').css('height',($('html').css('height'))*count_page);
-            $('body').css('height',($('body').css('height'))*count_page);
-            $('#main').css('height',($('#main').css('height'))*count_page);
-
-
+            $('html').css('height',($('html').css('height'))*count_page+'px');
+            $('body').css('height',($('body').css('height'))*count_page+'px');
+            $('#main').css('height',($('#main').css('height'))*count_page+'px');
         }
 
         var el=document.createElement('div'); 
@@ -248,6 +275,9 @@ $('#widgetbar').on('click',function(event){
         });
         el.addEventListener('dragstart',function(e){
             drag(e);
+        })
+        el.addEventListener('click',function(e){
+            displayResizer(this);
         })
         active_text_id=el.id;
         document.getElementById(active_page_id).appendChild(el);

@@ -138,5 +138,16 @@ input#Fstyle{
     z-index: 10;
 }
 
+.resizer{
+    display: none;
+    z-index: 1000;
+}
 
+.c_resize{
+    display: none;
+    width: 10px;
+    height: 10px;
+    background-color:black;
+    z-index: 1000;
+}
 
