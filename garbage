@@ -281,3 +281,40 @@ $('.menuListSize').removeClass('visible');
 
 
 
+function dragging(event){
+    translateX=event.clientX-initial_X;
+    console.log(document.getElementById(event.target.id).offsetLeft);
+    console.log(translateX);
+    //resizer_array[7].style.left=document.
+    //var d_el=document.getElementById(event.target.id);
+    //resizer_array[1].style.top=event.clientY; (parseInt(resizer_array[7].style.left.substring(0,resizer_array[7].style.left.length-2))+translateX)+'px';
+}
+
+
+
+
+//resizer.style.width=el.style.width;
+        //resizer.style.height=el.style.height;
+        //resizer.style.top=el.style.top;
+        //resizer.style.left=el.style.left;
+
+
+
+        //document.getElementById('main').removeChild(resizer);
+        //document.getElementById(active_page_id).appendChild(resizer);
+
+
+//$(resizer).removeClass('resizer_off');
+    //$(resizer).addClass('resizer_on');
+
+
+
+//$(resizer).removeClass('resizer_on');
+        //$(resizer).addClass('resizer_off')
+
+
+
+
+
+
+//var resizer=document.getElementById('resizer');
