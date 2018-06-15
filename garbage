@@ -318,3 +318,20 @@ function dragging(event){
 
 
 //var resizer=document.getElementById('resizer');
+
+
+
+
+
+
+
+
+
+<div id="c_1" class="c_resize resizer_off" draggable="true"  ondragstart="drag(event)" style="cursor: nw-resize"></div>
+<div id="c_2" class="c_resize resizer_off" draggable="true"  ondragstart="drag(event)" style="cursor: n-resize"></div>
+<div id="c_3" class="c_resize resizer_off" draggable="true"  ondragstart="drag(event)" style="cursor: ne-resize"></div>
+<div id="c_4" class="c_resize resizer_off" draggable="true"  ondragstart="drag(event)" style="cursor: e-resize"></div>
+<div id="c_5" class="c_resize resizer_off" draggable="true"  ondragstart="drag(event)" style="cursor: se-resize"></div>
+<div id="c_6" class="c_resize resizer_off" draggable="true"  ondragstart="drag(event)" style="cursor: s-resize"></div>
+<div id="c_7" class="c_resize resizer_off" draggable="true"  ondragstart="drag(event)" style="cursor: sw-resize"></div>
+<div id="c_8" class="c_resize resizer_off" draggable="true"  ondragstart="drag(event)" style="cursor: w-resize"></div>
