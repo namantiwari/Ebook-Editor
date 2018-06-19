@@ -17,11 +17,14 @@ var resizer_status=[false,'none'];
 
 
 function drag(event){
+    var img_src='null';
     drag_id=event.target.id;
-    console.log(drag_id);
+    if(drag_id.includes('image_holder')){
+        img_src=document.getElementById(drag_id).src;
+    }
     var style = window.getComputedStyle(event.target, null);
     event.dataTransfer.setData(drag_id,
-    (parseInt(style.getPropertyValue("left"),10) - event.clientX) + ',' + (parseInt(style.getPropertyValue("top"),10) - event.clientY))
+    (parseInt(style.getPropertyValue("left"),10) - event.pageX) + ',' + (parseInt(style.getPropertyValue("top"),10) - event.pageY)+','+img_src);
 }
 function allowdrag(event){
     event.preventDefault();
@@ -32,8 +35,11 @@ function allowdrag(event){
 function onDrop(event){
     var offset = event.dataTransfer.getData(drag_id).split(',');
     var dm = document.getElementById(drag_id);
-    dm.style.left = (event.clientX + parseInt(offset[0],10)) + 'px';
-    dm.style.top = (event.clientY + parseInt(offset[1],10)) + 'px';
+    dm.style.left = (event.pageX + parseInt(offset[0],10)) + 'px';
+    dm.style.top = (event.pageY + parseInt(offset[1],10)) + 'px';
+    if(offset[2]!='null'){
+        dm.src=offset[2];
+    }
     event.preventDefault();
 }
 
@@ -57,62 +63,143 @@ function changeFontSize(select,s){
 
 
 function startResize(event,tar_id,parent_el){
+
     event.stopPropagation();
-    console.log(event);
+    var add_left=-5;
+    var add_top=-5;
+    for(var i=0;i<8;i++){
+        parent_el.appendChild(resizer_array[i]);
+
+        if(i<3 && i>=1){
+            add_left=add_left+($(parent_el).width()/2);
+        }
+        else if(i>=3 && i<5){
+            add_top=add_top+($(parent_el).height()/2);
+        }
+         else if(i>=5 && i<7){
+            add_left=add_left-($(parent_el).width()/2);
+        }
+        else if(i==7){
+            add_top=add_top-($(parent_el).height()/2);
+        }
+        resizer_array[i].style.top=add_top+'px';
+        resizer_array[i].style.left=add_left+'px';
+
+    }
+
+
+
     if(tar_id=='c_1'){
+
         offsetRight=$(window).width()-($(parent_el).offset().left+$(parent_el).outerWidth());
         offsetBottom=$(window).height()-($(parent_el).offset().top+$(parent_el).outerHeight());
+
         $(parent_el).css('bottom',$(parent_el).css('bottom'));
         $(parent_el).css('right',$(parent_el).css('right'));
         $(parent_el).css('top','');
         $(parent_el).css('left','');
-        parent_el.style.width = (($(window).width()-event.clientX) - offsetRight) + 'px';
-        parent_el.style.height = (($(window).height()-event.clientY) - offsetBottom) + 'px';
+
+        parent_el.style.width = (($(window).width()-event.pageX) - offsetRight) + 'px';
+        parent_el.style.height = (($(window).height()-event.pageY) - offsetBottom) + 'px';
     }
+    if(tar_id=='c_2'){
+
+        offsetBottom=$(window).height()-($(parent_el).offset().top+$(parent_el).outerHeight());
+
+        $(parent_el).css('bottom',$(parent_el).css('bottom'));
+        $(parent_el).css('left',$(parent_el).css('left'));
+        $(parent_el).css('right',$(parent_el).css('right'));
+        $(parent_el).css('top','');
+
+        parent_el.style.height = (($(window).height()-event.pageY) - offsetBottom) + 'px';
+    }
+
     if(tar_id=='c_3'){
-        //offsetRight=$(window).width()-($(parent_el).offset().left+$(parent_el).outerWidth());
+
         offsetBottom=$(window).height()-($(parent_el).offset().top+$(parent_el).outerHeight());
+
         $(parent_el).css('bottom',$(parent_el).css('bottom'));
         $(parent_el).css('left',$(parent_el).css('left'));
         $(parent_el).css('top','');
         $(parent_el).css('right','');
-        parent_el.style.width = ((event.clientX- parent_el.offsetLeft-parent_el.offsetParent.offsetLeft) + 'px');
-        parent_el.style.height = (($(window).height()-event.clientY) - offsetBottom) + 'px';
+
+        parent_el.style.width = ((event.pageX- parent_el.offsetLeft-parent_el.offsetParent.offsetLeft) + 'px');
+        parent_el.style.height = (($(window).height()-event.pageY) - offsetBottom) + 'px';
+
     }
+    
+    if(tar_id=='c_4'){
+
+        $(parent_el).css('bottom',$(parent_el).css('bottom'));
+        $(parent_el).css('left',$(parent_el).css('left'));
+        $(parent_el).css('top',$(parent_el).css('top'));
+        $(parent_el).css('right','');
+
+        parent_el.style.width = (event.pageX- parent_el.offsetLeft-parent_el.offsetParent.offsetLeft) + 'px';
+        
+    }
+    
     if(tar_id=='c_5'){
+
         $(parent_el).css('top',$(parent_el).css('top'));
         $(parent_el).css('left',$(parent_el).css('left'));
         $(parent_el).css('bottom','');
         $(parent_el).css('right','');
-        //offsetRight=$(window).width()-($(parent_el).offset().left+$(parent_el).outerWidth());
-        //offsetBottom=$(window).height()-($(parent_el).offset().top+$(parent_el).outerHeight());
-        parent_el.style.width = (event.clientX- parent_el.offsetLeft-parent_el.offsetParent.offsetLeft) + 'px';
-        parent_el.style.height = (event.clientY - parent_el.offsetTop-parent_el.offsetParent.offsetTop) + 'px';
+
+        parent_el.style.width = (event.pageX- parent_el.offsetLeft-parent_el.offsetParent.offsetLeft) + 'px';
+        parent_el.style.height = (event.pageY - parent_el.offsetTop-parent_el.offsetParent.offsetTop) + 'px';
     }
+    
+    if(tar_id=='c_6'){
+
+        $(parent_el).css('left',$(parent_el).css('left'));
+        $(parent_el).css('top',$(parent_el).css('top'));
+        $(parent_el).css('right',$(parent_el).css('right'));
+        $(parent_el).css('bottom','');
+
+        parent_el.style.height = (event.pageY - parent_el.offsetTop-parent_el.offsetParent.offsetTop) + 'px';
+    }
+
     if(tar_id=='c_7'){
+
         offsetRight=$(window).width()-($(parent_el).offset().left+$(parent_el).outerWidth());
+
         $(parent_el).css('top',$(parent_el).css('top'));
         $(parent_el).css('right',$(parent_el).css('right'));
         $(parent_el).css('bottom','');
         $(parent_el).css('left','');
-        //offsetBottom=$(window).height()-($(parent_el).offset().top+$(parent_el).outerHeight());
-        parent_el.style.width = (($(window).width()-event.clientX) - offsetRight) + 'px';
-        parent_el.style.height = (event.clientY - parent_el.offsetTop-parent_el.offsetParent.offsetTop) + 'px';
+
+        parent_el.style.width = (($(window).width()-event.pageX) - offsetRight) + 'px';
+        parent_el.style.height = (event.pageY - parent_el.offsetTop-parent_el.offsetParent.offsetTop) + 'px';
     }
+
+    if(tar_id=='c_8'){
+
+        offsetRight=$(window).width()-($(parent_el).offset().left+$(parent_el).outerWidth());
+
+        $(parent_el).css('bottom',$(parent_el).css('bottom'));
+        $(parent_el).css('top',$(parent_el).css('top'));
+        $(parent_el).css('right',$(parent_el).css('right'));
+        $(parent_el).css('left','');
+
+        parent_el.style.width = (($(window).width()-event.pageX) - offsetRight) + 'px';
+    }
+    
 }
 
 function stopResize(e,parent_el) {
-    console.log(e);
     parent_el.draggable=true;
+    parent_el.contenteditable=true;
     e.stopPropagation();
     window.removeEventListener('mousemove', s_resize);
     window.removeEventListener('mouseup', st_resize);
+
 } 
 
 
 function initialiseResize(tar_el,parent_el){
-    console.log('it is triggered');
     parent_el.draggable=false;
+    parent_el.contenteditable=false;
     var tar_id=tar_el.id;
     window.addEventListener('mousemove',s_resize=function(event){startResize(event,tar_id,parent_el)});
     window.addEventListener('mouseup',st_resize=function(event){stopResize(event,parent_el)});        
@@ -125,6 +212,24 @@ function createResizer(el){
 
     for(var i=0;i<8;i++){
         var r_el=document.createElement('div');
+        
+        if(i==0)
+        r_el.style.cursor='nw-resize';
+        if(i==1)
+        r_el.style.cursor='n-resize';
+        if(i==2)
+        r_el.style.cursor='ne-resize';
+        if(i==3)
+        r_el.style.cursor='e-resize';
+        if(i==4)
+        r_el.style.cursor='se-resize';
+        if(i==5)
+        r_el.style.cursor='s-resize';
+        if(i==6)
+        r_el.style.cursor='sw-resize';
+        if(i==7)
+        r_el.style.cursor='w-resize';
+
         $(r_el).attr({
             id:'c_'+(i+1),
             class:'c_resize',
@@ -134,13 +239,10 @@ function createResizer(el){
             width: 10+'px',
             height: 10+'px',
             backgroundColor:'black',
-            zIndex: 20,
-            cursor:'nw-resize'
+            zIndex: 22,
         });
         $(r_el).addClass('resizer_off');
-        /*r_el.addEventListener('dragstart',function(event){
-            drag(event);
-        });*/
+        
         r_el.addEventListener('mousedown',function(event){
             event.stopPropagation();
             initialiseResize(this,el);
@@ -196,17 +298,29 @@ window.currFocus = document;
 
 $(document).on( 'focusin', function () {
   window.prevFocus = window.currFocus;
-  console.log('previous focus set to:')
-  console.log(window.currFocus);
   window.currFocus = document.activeElement;
   if(window.prevFocus==document.getElementById('input_image')){
     var file=document.getElementById('input_image').files[0];
-    console.log('hello world '+file)
     var reader=new FileReader();
     reader.onloadend=function(){
         $('#input_image').remove();
-        document.getElementById(active_image_id).style.background='url('+reader.result+')';
-        document.getElementById(active_image_id).style.backgroundRepeat='no-repeat';
+        $('#'+active_image_id);
+        var img=document.createElement('img')
+        $(img).attr({
+            id:'image_holder_'+image_id,
+            draggable:true,
+            width:300+'px',
+            height:300+'px',
+        })
+        img.src=reader.result;
+        img.addEventListener('dragstart',function(e){
+            drag(e);
+        })
+        document.getElementById(active_page_id).appendChild(img);
+        document.getElementById(active_page_id).removeChild(document.getElementById(active_image_id));
+        active_image_id=img.id;
+        //document.getElementById(active_image_id).style.background='url('+reader.result+')';
+        //document.getElementById(active_image_id).style.backgroundRepeat='no-repeat';
         delete_item=2;
     }
     if(file){
@@ -383,8 +497,6 @@ $('#widgetbar').on('click',function(event){
             height:100+'px',
             borderStyle:'dashed',
             borderWidth:1+'px',
-            //resize:'both',
-            //overflow:'auto',
             margin:'auto',
             zIndex:20,
 
@@ -392,9 +504,13 @@ $('#widgetbar').on('click',function(event){
         el.addEventListener('dragstart',function(e){
             drag(e);
         })
-        el.addEventListener('click',function(e){
+        el.addEventListener('dblclick',function(e){
             e.stopPropagation();
             createResizer(this);
+        })
+        el.addEventListener('click',function(e){
+            if(resizer_status[0])
+            removeResizer();
         })
         active_text_id=el.id;
         document.getElementById(active_page_id).appendChild(el);

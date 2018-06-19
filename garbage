@@ -335,3 +335,21 @@ function dragging(event){
 <div id="c_6" class="c_resize resizer_off" draggable="true"  ondragstart="drag(event)" style="cursor: s-resize"></div>
 <div id="c_7" class="c_resize resizer_off" draggable="true"  ondragstart="drag(event)" style="cursor: sw-resize"></div>
 <div id="c_8" class="c_resize resizer_off" draggable="true"  ondragstart="drag(event)" style="cursor: w-resize"></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+resizer_array[2].style.left=parseInt(resizer_array[2].style.left.substring(0,resizer_array[2].style.left.length-2))+$(parent_el).width()-init_width+'px';
+resizer_array[4].style.left=parseInt(resizer_array[4].style.left.substring(0,resizer_array[4].style.left.length-2))+$(parent_el).width()-init_width+'px';
+resizer_array[4].style.top=parseInt(resizer_array[4].style.top.substring(0,resizer_array[4].style.top.length-2))+$(parent_el).height()-init_height+'px';
+resizer_array[6].style.top=parseInt(resizer_array[6].style.top.substring(0,resizer_array[6].style.top.length-2))+$(parent_el).height()-init_height+'px';
