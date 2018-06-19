@@ -212,7 +212,7 @@ function createResizer(el){
 
     for(var i=0;i<8;i++){
         var r_el=document.createElement('div');
-        
+
         if(i==0)
         r_el.style.cursor='nw-resize';
         if(i==1)
@@ -530,8 +530,6 @@ $('#widgetbar').on('click',function(event){
             height:300+'px',
             borderStyle:'dashed',
             borderWidth:1+'px',
-            resize:'both',
-            overflow:'auto',
             margin:'auto',
         });
         el.addEventListener('dragstart',function(e){
@@ -544,6 +542,10 @@ $('#widgetbar').on('click',function(event){
             id:'input_image',
             type:'file',
             margin:'auto',
+        })
+        el.addEventListener('dblclick',function(e){
+            e.stopPropagation();
+            createResizer(this);
         })
         document.getElementById(active_image_id).appendChild(input);
         
