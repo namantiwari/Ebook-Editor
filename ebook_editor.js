@@ -1,7 +1,8 @@
 var drag_id;
 var text_id=0;
 var page_id=0;
-var current_page=0;
+var page_no=0;
+var last_page=0;
 var active_page_id='';
 var count_page=0;
 var image_id=0;
@@ -12,6 +13,14 @@ var video_id=0;
 var active_video_id;
 var resizer_array=[];
 var resizer_status=[false,'none'];
+var page_array=[];
+
+
+Array.prototype.remove = function(from, to) {
+    var rest = this.slice((to || from) + 1 || this.length);
+    this.length = from < 0 ? this.length + from : from;
+    return this.push.apply(this, rest);
+  };
 
 
 
@@ -189,7 +198,8 @@ function startResize(event,tar_id,parent_el){
 
 function stopResize(e,parent_el) {
     parent_el.draggable=true;
-    parent_el.contenteditable=true;
+    parent_el.contenteditable=true
+    parent_el.offsetParent.draggable=true;
     e.stopPropagation();
     window.removeEventListener('mousemove', s_resize);
     window.removeEventListener('mouseup', st_resize);
@@ -200,6 +210,7 @@ function stopResize(e,parent_el) {
 function initialiseResize(tar_el,parent_el){
     parent_el.draggable=false;
     parent_el.contenteditable=false;
+    parent_el.offsetParent.draggable=false;
     var tar_id=tar_el.id;
     window.addEventListener('mousemove',s_resize=function(event){startResize(event,tar_id,parent_el)});
     window.addEventListener('mouseup',st_resize=function(event){stopResize(event,parent_el)});        
@@ -293,6 +304,90 @@ function removeResizer(){
 }
 
 
+function content_manager(current_page,new_id){
+
+    var page_content=document.getElementById(current_page).children;
+    var new_el=document.getElementById(new_id);
+    var page_el=document.getElementById(current_page);
+
+    for(var i=0; i<page_content.length; i++){
+
+    }
+
+}
+
+
+function page_manager(current_page_id,new_page){
+
+    var temp_page2;
+
+    if(current_page_id)
+        var current_page=document.getElementById(current_page_id);
+    
+    if(new_page!=null){
+        
+        if(page_no==0 || current_page.page_no==last_page){
+            if(page_no!=0)
+            page_no=current_page.page_no;
+            
+            new_page.page_no=page_no+1;
+            page_array[page_no]=new_page;
+            document.getElementById('main').appendChild(new_page); 
+            active_page_id=new_page.id;
+            page_no=page_no+1;
+            last_page=page_no;
+        }
+        
+        else{
+            page_no=current_page.page_no;
+            var temp_page1=page_array[page_no];
+            page_array[page_no]=new_page;
+            $(temp_page1).before(new_page);
+            new_page.page_no=temp_page1.page_no;
+            for(var i=page_no+1;i<page_array.length;i++){
+                temp_page2=page_array[i];
+                page_array[i]=temp_page1;
+                page_array[i].page_no=temp_page2.page_no;
+                temp_page1=temp_page2;
+            }
+            page_array.push(temp_page1);
+            $(temp_page1).position().top=$(page_array[page_array.length-2]).position().top+$(page_array[page_array.length-2]).width();
+            temp_page1.page_no=page_array.length;
+
+            last_page=page_array.length
+            active_page_id=new_page.id;
+        }
+    }
+
+    else{
+        var i=0;
+        var page_num;
+        var temp;
+        while(i<page_array.length){
+            if(page_array[i]==current_page){
+                page_num=current_page.page_no;
+                page_array.splice(i,i+1);
+                break;
+            }
+            i++;
+        }
+        for(var j=i;j<page_array.length;j++){
+            
+        }
+        last_page=page_array.length;
+        console.log(page_array.length);
+
+        for(var i=0;i<page_array.length;i++){
+            console.log(page_array[i].page_no);
+        }
+    }
+    
+}
+
+
+
+
+
 
 window.currFocus = document;
 
@@ -341,15 +436,17 @@ $('#main').on('click',function(event){
     if(event.target.id.includes('page_holder')){
         delete_item=0;
         active_page_id=event.target.id;
+        //content_manager(active_page_id);
     }
     if(event.target.id.includes('text_holder')){
-        delete_item=1
+        delete_item=1;
         active_text_id=event.target.id;
     }
     if(event.target.id.includes('image_holder')){
         delete_item=2
         active_image_id=event.target.id;
     }
+
     if($('.menuListSize,.menuSize,.size-button').hasClass('visible')){
         $('.menuListSize,.menuSize,.size-button').removeClass('visible');
         $('.menuListSize,.menuSize,.size-button').addClass('invisible');
@@ -462,7 +559,7 @@ $('#widgetbar').on('click',function(event){
         var el=document.createElement('div'); 
         $(el).attr({
             id:'page_holder'+page_id,
-            draggable:false,
+            //draggable:true,
             contenteditable:false,
         });
         $(el).css({
@@ -473,13 +570,14 @@ $('#widgetbar').on('click',function(event){
             borderStyle:'solid',
             borderWidth:1+'px',
             margin:'auto',
-            top:100+'px',
-            bottom:100+'px',
             marginTop:100+'px',
+            //top:100+'px',
 
         });
-        document.getElementById('main').appendChild(el); 
-        active_page_id=el.id;
+        /*el.addEventListener('dragstart',function(e){
+            drag(e);
+        })*/
+        page_manager(active_page_id,el);
     }
     
     if(_id=='new_button'){
@@ -497,7 +595,6 @@ $('#widgetbar').on('click',function(event){
             height:100+'px',
             borderStyle:'dashed',
             borderWidth:1+'px',
-            margin:'auto',
             zIndex:20,
 
         });
@@ -530,7 +627,6 @@ $('#widgetbar').on('click',function(event){
             height:300+'px',
             borderStyle:'dashed',
             borderWidth:1+'px',
-            margin:'auto',
         });
         el.addEventListener('dragstart',function(e){
             drag(e);
@@ -557,6 +653,7 @@ $('#widgetbar').on('click',function(event){
         if(delete_item==0){
             $('#'+active_page_id).remove();
             count_page=count_page-1;
+            page_manager(active_page_id,null);
         }
         else if(delete_item==1){
             $('#'+active_text_id).remove();
