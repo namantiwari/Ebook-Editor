@@ -353,3 +353,127 @@ resizer_array[2].style.left=parseInt(resizer_array[2].style.left.substring(0,res
 resizer_array[4].style.left=parseInt(resizer_array[4].style.left.substring(0,resizer_array[4].style.left.length-2))+$(parent_el).width()-init_width+'px';
 resizer_array[4].style.top=parseInt(resizer_array[4].style.top.substring(0,resizer_array[4].style.top.length-2))+$(parent_el).height()-init_height+'px';
 resizer_array[6].style.top=parseInt(resizer_array[6].style.top.substring(0,resizer_array[6].style.top.length-2))+$(parent_el).height()-init_height+'px';
+
+
+
+
+
+
+
+
+
+
+
+event.dataTransfer.setData(drag_id,
+        (parseInt(style.getPropertyValue("left"), 10) - event.pageX) + ',' + (parseInt(style.getPropertyValue("top"), 10) - event.pageY) + ',' + img_src);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <div id='holder'>
+        <div id="box">
+            <div id="handle"></div>
+         </div>
+        </div>
+         <script>
+                var box = document.getElementById('box');
+                $(document).ready(function(){
+                    $(box).css('top','200px');
+                    $(box).css('left','200px');
+                    console.log('hello world'+$(box).css('right'));
+                })
+                var resizeHandle = document.getElementById('handle');
+                resizeHandle.addEventListener('mousedown', initialiseResize, false);
+                
+                function initialiseResize(e) {
+                    window.addEventListener('mousemove', startResizing, false);
+                       window.addEventListener('mouseup', stopResizing, false);
+                }
+                
+                function startResizing(e) {
+                   offsetRight=$(window).width()-($(box).offset().left+$(box).outerWidth());
+                   offsetBottom=$(window).height()-($(box).offset().top+$(box).outerHeight());
+                   $(box).css('bottom',$(box).css('bottom'));
+                   $(box).css('right',$(box).css('right'));
+                   $(box).css('top','');
+                   $(box).css('left','');
+                   console.log(box);
+                   box.style.width = (($(window).width()-e.clientX) - offsetRight) + 'px';
+                   box.style.height = (($(window).height()-e.clientY) - offsetBottom) + 'px';
+                   //console.log(e.clientX - offsetRight);
+                }
+                function stopResizing(e) {
+                    window.removeEventListener('mousemove', startResizing, false);
+                    window.removeEventListener('mouseup', stopResizing, false);
+                } 
+                </script>
+
+
+
+
+
+
+
+
+
+
+
+                <style>
+    #holder{
+        position: absolute;
+        border-style: dashed;
+        width: 1000px;
+        height: 1000px;
+        
+    }
+#box {
+    position: absolute;
+    width: 130px;
+    height: 130px;
+    background-color: #2196F3;
+    display:flex;
+    align-items:center;
+    
+    
+}
+
+#handle {
+    background-color: #727272;
+    width: 10px;
+    height: 10px;
+    cursor: se-resize;
+    position:absolute;
+    top:-5px;
+    left:-5px;
+    
+}
+</style>
+
+
+
+
+
+
+
+
+
+<script src="jquery-resizable.js"></script>
+
+<link rel="stylesheet" href="style_color.css">
+
+
+

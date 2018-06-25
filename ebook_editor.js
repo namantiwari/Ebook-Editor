@@ -14,13 +14,9 @@ var active_video_id;
 var resizer_array = [];
 var resizer_status = [false, 'none'];
 var page_array = [];
+var init_height;
+var default_height;
 
-
-Array.prototype.remove = function (from, to) {
-    var rest = this.slice((to || from) + 1 || this.length);
-    this.length = from < 0 ? this.length + from : from;
-    return this.push.apply(this, rest);
-};
 
 
 
@@ -28,6 +24,7 @@ Array.prototype.remove = function (from, to) {
 function drag(event) {
     var img_src = 'null';
     drag_id = event.target.id;
+    var drag_el=document.getElementById(drag_id);
     if (drag_id.includes('image_holder')) {
         img_src = document.getElementById(drag_id).src;
     }
@@ -35,6 +32,7 @@ function drag(event) {
     event.dataTransfer.setData(drag_id,
         (parseInt(style.getPropertyValue("left"), 10) - event.pageX) + ',' + (parseInt(style.getPropertyValue("top"), 10) - event.pageY) + ',' + img_src);
 }
+
 function allowdrag(event) {
     event.preventDefault();
 }
@@ -49,8 +47,26 @@ function onDrop(event) {
     if (offset[2] != 'null') {
         dm.src = offset[2];
     }
+
+    if(event.target.id.includes('page_holder') && (drag_id.includes('text_holder')||drag_id.includes('image_holder'))){
+        UpdateParent(event.target.id);
+    }
     event.preventDefault();
+    event.stopPropagation();
 }
+
+function UpdateParent(new_parent_id){
+    var new_parent=document.getElementById(new_parent_id);
+    var drag_element=document.getElementById(drag_id);
+    var drag_parent=drag_element.parentElement;
+    var new_top=parseInt($(drag_element).css('top').substring(0,$(drag_element).css('top').length-2))+parseInt($(drag_parent).css('top').substring(0,$(drag_parent).css('top').length-2))-parseInt($(new_parent).css('top').substring(0,$(new_parent).css('top').length-2));
+    $(drag_element).css('top',new_top+'px');
+    var new_left=parseInt($(drag_element).css('left').substring(0,$(drag_element).css('left').length-2))+parseInt($(drag_parent).css('left').substring(0,$(drag_parent).css('left').length-2))-parseInt($(new_parent).css('left').substring(0,$(new_parent).css('left').length-2));
+    $(drag_element).css('left',new_left+'px');
+    drag_parent.removeChild(drag_element);
+    new_parent.appendChild(drag_element);
+}
+
 
 function getSelection() {
     if (document.getSelection()) {
@@ -70,6 +86,27 @@ function changeFontSize(select, s) {
     range.insertNode(span);
 }
 
+function childNodesHeight(el){
+    var height = 0;
+    var child_nodes=el.childNodes;
+    for(var i=0;i<child_nodes.length;i++){
+        if (document.createRange) {
+            var range = document.createRange();
+            range.selectNodeContents(child_nodes[i]);
+            if (range.getBoundingClientRect) {
+                var rect = range.getBoundingClientRect();
+                if (rect) {
+
+                    if(child_nodes[i].nodeType==1)
+                    init_height=rect.bottom - rect.top;
+                    if(child_nodes[i].nodeType==3)
+                    height=height+ (rect.bottom - rect.top);
+                }
+            }
+        }
+    }
+    return height;
+}
 
 function startResize(event, tar_id, parent_el) {
 
@@ -203,6 +240,9 @@ function stopResize(e, parent_el) {
     e.stopPropagation();
     window.removeEventListener('mousemove', s_resize);
     window.removeEventListener('mouseup', st_resize);
+    if(e.target.id.includes('text_holder')){
+        default_height=parseInt(document.getElementById(e.target.id).style.height.substring(0,document.getElementById(e.target.id).style.height.length-2));
+    }
 
 }
 
@@ -294,6 +334,7 @@ function displayResizer(el) {
 
 
 function removeResizer() {
+
     var el_resizer = document.getElementById(resizer_status[1]);
     for (var i = 0; i < 8; i++) {
         $(resizer_array[i]).removeClass('resizer_on');
@@ -319,6 +360,11 @@ function content_manager(current_page, new_id) {
 
 function page_manager(current_page_id, new_page) {
 
+    if(page_array.length==0){
+        page_no=0;
+        active_page_id='';
+        current_page_id='';
+    }
     var temp_page2;
     var current_page;
 
@@ -327,13 +373,22 @@ function page_manager(current_page_id, new_page) {
 
     if (new_page != null) {
 
+
         if (page_no == 0 || current_page.page_no == last_page) {
+
+            $(new_page).css('top',page_array.length*($(new_page).height()+100)+'px');
+
             if (page_no != 0)
                 page_no = current_page.page_no;
 
             new_page.page_no = page_no + 1;
             page_array[page_no] = new_page;
+
+            if(page_no==0)
             document.getElementById('main').appendChild(new_page);
+            else
+            $(page_array[page_no-1]).after(new_page);
+
             active_page_id = new_page.id;
             page_no = page_no + 1;
             last_page = page_no;
@@ -341,6 +396,7 @@ function page_manager(current_page_id, new_page) {
 
         else {
             page_no = current_page.page_no;
+            $(new_page).css('top',(page_no)*($(new_page).height()+100)+'px');
             var temp_page1 = page_array[page_no];
             page_array[page_no] = new_page;
             $(temp_page1).before(new_page);
@@ -349,12 +405,13 @@ function page_manager(current_page_id, new_page) {
                 temp_page2 = page_array[i];
                 page_array[i] = temp_page1;
                 page_array[i].page_no = temp_page2.page_no;
+                $(page_array[i]).css('top',(page_array[i].page_no)*($(page_array[i]).height()+100)+'px');
                 temp_page1 = temp_page2;
             }
             page_array.push(temp_page1);
-            $(temp_page1).position().top = $(page_array[page_array.length - 2]).position().top + $(page_array[page_array.length - 2]).width();
             temp_page1.page_no = page_array.length;
-
+            $(temp_page1).css('top',(temp_page1.page_no-1)*($(temp_page1).height()+100)+'px');
+           
             last_page = page_array.length
             active_page_id = new_page.id;
         }
@@ -362,18 +419,17 @@ function page_manager(current_page_id, new_page) {
 
     else {
         var i = 0;
-        var page_num;
         var temp;
         while (i < page_array.length) {
             if (page_array[i] == current_page) {
-                page_num = current_page.page_no;
-                page_array.splice(i, i + 1);
+                page_array.splice(i,1);
                 break;
             }
             i++;
         }
         for (var j = i; j < page_array.length; j++) {
             page_array[j].page_no = page_array[j].page_no - 1;
+            $(page_array[j]).css('top',(j)*($(page_array[j]).height()+100)+'px');
         }
         last_page = page_array.length;
     }
@@ -400,12 +456,23 @@ $(document).on('focusin', function () {
             $(img).attr({
                 id: 'image_holder_' + image_id,
                 draggable: true,
-                width: 300 + 'px',
-                height: 300 + 'px',
+            })
+            var top=document.getElementById(active_image_id).style.top;
+            var left=document.getElementById(active_image_id).style.left;
+            $(img).css({
+                position:'absolute',
+                width:document.getElementById(active_image_id).style.width, //300 + 'px',
+                height:document.getElementById(active_image_id).style.height,
+                top:top,
+                left:left,
             })
             img.src = reader.result;
             img.addEventListener('dragstart', function (e) {
                 drag(e);
+            })
+            img.addEventListener('dblclick', function (e) {
+                e.stopPropagation();
+                createResizer(this);
             })
             document.getElementById(active_page_id).appendChild(img);
             document.getElementById(active_page_id).removeChild(document.getElementById(active_image_id));
@@ -432,6 +499,7 @@ $('#main').on('click', function (event) {
     if (event.target.id.includes('page_holder')) {
         delete_item = 0;
         active_page_id = event.target.id;
+        //console.log(active_page_id);
         //content_manager(active_page_id);
     }
     if (event.target.id.includes('text_holder')) {
@@ -555,24 +623,27 @@ $('#widgetbar').on('click', function (event) {
         var el = document.createElement('div');
         $(el).attr({
             id: 'page_holder' + page_id,
-            //draggable:true,
+            draggable:true,
             contenteditable: false,
         });
         $(el).css({
-            position: 'relative',
+            position: 'absolute',
             backgroundColor: 'white',
             width: 800 + 'px',
             height: 1000 + 'px',
             borderStyle: 'solid',
             borderWidth: 1 + 'px',
-            margin: 'auto',
             marginTop: 100 + 'px',
-            //top:100+'px',
+            //marginLeft:auto,
+            left:500+'px'
 
         });
-        /*el.addEventListener('dragstart',function(e){
+        el.addEventListener('dragstart',function(e){
             drag(e);
-        })*/
+        })
+        el.addEventListener('drop',function(e){
+            onDrop(e);
+        })
         page_manager(active_page_id, el);
     }
 
@@ -588,7 +659,7 @@ $('#widgetbar').on('click', function (event) {
         $(el).css({
             position: 'absolute',
             width: 100 + 'px',
-            height: 100 + 'px',
+            height: 108 + 'px',
             borderStyle: 'dashed',
             borderWidth: 1 + 'px',
             zIndex: 20,
@@ -604,6 +675,17 @@ $('#widgetbar').on('click', function (event) {
         el.addEventListener('click', function (e) {
             if (resizer_status[0])
                 removeResizer();
+        })
+        default_height=parseInt(el.style.height.substring(0,el.style.height.length-2));
+        $(el).on('keydown', function (e) {
+            var height=0;
+            height=(el.childNodes.length+1)*(init_height+1+parseInt(childNodesHeight(this)));
+            //console.log(parseInt(childNodesHeight(this)/2),childNodesHeight(this))
+            if(height!=$(el).height()){
+                if(height>default_height){
+                    el.style.height=height+'px';
+                }
+            }
         })
         active_text_id = el.id;
         document.getElementById(active_page_id).appendChild(el);
