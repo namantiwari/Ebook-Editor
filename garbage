@@ -477,3 +477,60 @@ event.dataTransfer.setData(drag_id,
 
 
 
+/*app.get('/index.html',function(req,res){
+    console.log('__dirname is :'+__dirname);
+    res.sendFile(__dirname+'/index.html');
+    
+})
+app.get('/style.css',function(req,res){
+    res.sendFile(__dirname+'/style.css');
+})
+app.get('/ebook_editor.js',function(req,res){
+    res.sendFile(__dirname+'/ebook_editor.js');
+})
+
+//console.log('image file is :'+imageFile)
+
+app.get(imageFile,function(req,res){
+    console.log('fjdhskjfhkjsahf');
+    res.set('Content-Type','image/jpeg');
+    res.sendFile(__dirname+imageFile);
+})*/
+
+
+//app.get('/images')
+/*http.createServer(function(req,res){
+
+
+    var contentType='text/html';
+    var filename=req.url.toString().substring(1);
+
+    if(req.url.toString().includes('.css'))
+        contentType='text/css';
+    if(req.url.toString().includes('.js'))
+        contentType='text/javascript'; 
+    if(req.url.toString().includes('.ico'))
+        contentType='image/x-icon';
+    if(req.url==filename){
+
+
+        contentType='image';
+    }
+    fs.readFile(filename,function(err,data){
+
+        console.log(filename+'jhfldsajflk')
+        if(err)throw err;
+        
+        res.writeHead(200,{'Content-Type':contentType});
+        res.write(data);
+        res.end();
+    });
+}).listen(8000);*/
+
+
+
+
+//app.use(fileUpload());
+//app.use(bodyParser.urlencoded({extended:true}));
+
+/**/
