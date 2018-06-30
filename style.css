@@ -173,3 +173,10 @@ div[id^='text_holder'] > div{
     
     font-size: 100%;
 }
+
+div.active_slide{
+  display:block;
+}
+div.inactive_slide{
+    display:none;
+  }
