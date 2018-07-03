@@ -1,32 +1,29 @@
-var drag_id;
-var text_id = 0;
-var page_id = 0;
-var page_no = 0;
-var last_page = 0;
-var active_page_id = '';
-var count_page = 0;
-var img_id = 0;
-var active_img_id;
-var delete_item = -1;
-var active_text_id;
-var video_id = 0;
-var active_video_id;
-var resizer_array = [];
-var resizer_status = [false, 'none'];
-var page_array = [];
-var init_height;
-var default_height;
-var media_type;
-var count_media=0;
-var active_media_id;
-var slideshow_id=0;
-var active_slideshow;
-var holder_adj='';
-var slide_no=0;
+var drag_id;                                  //holds the id of the element being dragged.
+var text_id = 0;                             //gives a unique id to text boxes(text holder divs). 
+var page_id = 0;                            //gives a unique id to pages(page holder divs).
+var page_no = 0;                            //used for numbering pages.
+var last_page = 0;                         //page no for last page.
+var active_page_id = '';                   //holds the id of the div(page holder) that is currently in focus.                       
+var img_id = 0;                            //gives a unique id images(image holder divs).
+var active_img_id;                         //holds the id of the div(image holder) that is currently in focus or last clicked.
+var delete_item = -1;                      //holds a unique number for different holders(div elements).0-page_holder,1-text_holder,2-image-holder,3-video_holder,4-media_holder,5-slide_holder.
+var active_text_id;                        //holds the id of the div(text holder) that is currently in focus.
+var video_id = 0;                          //gives a unique id to videos(video holder divs).
+var active_video_id;                        //holds the id of the div(video holder) that is currently in focus.
+var resizer_array = [];                     //holds the 8 div elements used for resizing a div element.
+var resizer_status = [false, 'none'];       // resizer_status[0] checks if resizer is on or off(true-on,false-off); resizer_status[1] holds the html element to which resizer is attached.
+var page_array = [];                        //an array of pages(page holder divs) created by the user.
+var media_type;                              //holds the type of media to be uploaded('img','video')
+var count_media=0;                           //gives a unique id to media elements(temp media holder divs).
+var active_media_id;                         //holds the id of the div(media holder) that is currently in focus or last clicked.
+var slideshow_id=0;                          //gives a unique id to slides(slide holder divs).
+var active_slideshow;                        //holds the id of the div(slide holder) that is currently in focus or last clicked.
+var holder_adj='';                           //stands for 'holder ajective'(describing word for holder) defines if the media belongs to a slideshow otherwise null.
 
 
 
 
+//eventHandler for drag events. Checks if the resizer is attached to the element being dragged,resizer creates problems if used simultaneously.
 function drag(event) {
     drag_id = event.target.id;
     var drag_el=document.getElementById(drag_id);
@@ -49,12 +46,13 @@ function drag(event) {
         (parseInt(style.getPropertyValue("left"), 10) - event.pageX) + ',' + (parseInt(style.getPropertyValue("top"), 10) - event.pageY) + ',');
 }
 
+//prevents the default action when the drag is over.
 function allowdrag(event) {
     event.preventDefault();
 }
 
 
-
+//eventHandler for 'drop' event triggered after the dragover event.
 function onDrop(event) {
     var offset = event.dataTransfer.getData(drag_id).split(',');
     var dm = document.getElementById(drag_id);
@@ -67,6 +65,9 @@ function onDrop(event) {
     event.stopPropagation();
 }
 
+// common event handler for all the click events occuring on the toolbar. based on the id of the target button carries out specific action.
+
+//updates the page holder for an element(text_holder,img_holder,video_holder,slide_holder) if the user drags any element from one page to another.
 function UpdateParent(new_parent_id){
     var new_parent=document.getElementById(new_parent_id);
     var drag_element=document.getElementById(drag_id);
@@ -79,7 +80,7 @@ function UpdateParent(new_parent_id){
     new_parent.appendChild(drag_element);
 }
 
-
+//it is used for getting the selected text.
 function getSelection() {
     if (document.getSelection()) {
         select = document.getSelection();
@@ -88,7 +89,7 @@ function getSelection() {
 }
 
 
-
+//changes the font size of the selected text.
 function changeFontSize(select, s) {
     var span = document.createElement('span');
     span.innerHTML = select.toString();
@@ -98,6 +99,114 @@ function changeFontSize(select, s) {
     range.insertNode(span);
 }
 
+
+// creates the resizer(a set of 8 div elements).Invoked by the element that is to be resized.
+function createResizer(el) {
+
+    if($(el).has('.c_resize').length==0){
+    for (var i = 0; i < 8; i++) {
+        var r_el = document.createElement('div');
+
+        if (i == 0)
+            r_el.style.cursor = 'nw-resize';
+        if (i == 1)
+            r_el.style.cursor = 'n-resize';
+        if (i == 2)
+            r_el.style.cursor = 'ne-resize';
+        if (i == 3)
+            r_el.style.cursor = 'e-resize';
+        if (i == 4)
+            r_el.style.cursor = 'se-resize';
+        if (i == 5)
+            r_el.style.cursor = 's-resize';
+        if (i == 6)
+            r_el.style.cursor = 'sw-resize';
+        if (i == 7)
+            r_el.style.cursor = 'w-resize';
+
+        $(r_el).attr({
+            id: 'c_' + (i + 1),
+            class: 'c_resize',
+        });
+        $(r_el).css({
+            position: 'absolute',
+            width: 10 + 'px',
+            height: 10 + 'px',
+            backgroundColor: 'black',
+            zIndex: 22,
+        });
+        $(r_el).addClass('resizer_off');
+
+        r_el.addEventListener('mousedown', function (event) {
+            event.stopPropagation();
+            initialiseResize(this, el);
+        })
+        resizer_array[i] = r_el;
+    }
+    displayResizer(el);
+}
+}
+
+
+//attaches the resizer to the respective element.
+function displayResizer(el) {
+    if (!(resizer_status[0])) {
+        var add_left = -5;
+        var add_top = -5;
+
+        if(el.id.includes('video_holder')){
+            $(el).removeAttr('controls');
+            console.log('controls removed')
+        }
+        var height=$(el).height();
+        var width=$(el).width();
+
+        for (var i = 0; i < 8; i++) {
+            el.appendChild(resizer_array[i]);
+
+            if (i < 3 && i >= 1) {
+                add_left = add_left + (width/2);
+            }
+            else if (i >= 3 && i < 5) {
+                add_top = add_top + (height/ 2);
+            }
+            else if (i >= 5 && i < 7) {
+                add_left = add_left - (width/2);
+            }
+            else if (i == 7) {
+                add_top = add_top - (height/2);
+            }
+            resizer_array[i].style.top = add_top + 'px';
+            resizer_array[i].style.left = add_left + 'px';
+            $(resizer_array[i]).removeClass('resizer_off');
+            $(resizer_array[i]).addClass('resizer_on');
+            if(el.id.includes('video_holder') && (i+1)%2==0){
+                $(resizer_array[i]).removeClass('resizer_on');
+                $(resizer_array[i]).addClass('resizer_off');
+            }
+        }
+    }
+    resizer_status[0] = true;
+    resizer_status[1] = el.id;
+    el.style.borderStyle='dashed';
+    el.contentEditable=false;
+    el.draggable=false;
+}
+
+
+
+//attaches the necessary event listeners to the 8 div elements. Triggered when the resizing starts.
+function initialiseResize(tar_el, parent_el) {
+    parent_el.draggable = false;
+    parent_el.contenteditable = false;
+    parent_el.offsetParent.draggable = false;
+    var tar_id = tar_el.id;
+    window.addEventListener('mousemove', s_resize = function (event) { startResize(event, tar_id, parent_el) });
+    window.addEventListener('mouseup', st_resize = function (event) { stopResize(event, parent_el) });
+}
+
+
+//changes the height and width of the element being resized.
 function startResize(event, tar_id, parent_el) {
 
     event.stopPropagation();
@@ -220,14 +329,10 @@ function startResize(event, tar_id, parent_el) {
 
         parent_el.style.width = (($(window).width() - event.pageX) - offsetRight) + 'px';
     }
-    /*if(parent_el.id.includes('parent_'+media_type+'_holder')){
-        var child_el=document.getElementById(media_type+'_holder_'+parent_el.id.substring(parent_el.id.length-1));
-        child_el.style.width=parent_el.style.width;
-        child_el.style.height=parent_el.style.height;
-    }*/
 
 }
 
+//removes the event listeners from 8 div elements.Triggered when the resizing stops.
 function stopResize(e, parent_el) {
     e.stopPropagation();
     window.removeEventListener('mousemove', s_resize);
@@ -236,108 +341,8 @@ function stopResize(e, parent_el) {
 }
 
 
-function initialiseResize(tar_el, parent_el) {
-    parent_el.draggable = false;
-    parent_el.contenteditable = false;
-    parent_el.offsetParent.draggable = false;
-    var tar_id = tar_el.id;
-    window.addEventListener('mousemove', s_resize = function (event) { startResize(event, tar_id, parent_el) });
-    window.addEventListener('mouseup', st_resize = function (event) { stopResize(event, parent_el) });
-}
 
-
-
-
-function createResizer(el) {
-
-    if($(el).has('.c_resize').length==0){
-    for (var i = 0; i < 8; i++) {
-        var r_el = document.createElement('div');
-
-        if (i == 0)
-            r_el.style.cursor = 'nw-resize';
-        if (i == 1)
-            r_el.style.cursor = 'n-resize';
-        if (i == 2)
-            r_el.style.cursor = 'ne-resize';
-        if (i == 3)
-            r_el.style.cursor = 'e-resize';
-        if (i == 4)
-            r_el.style.cursor = 'se-resize';
-        if (i == 5)
-            r_el.style.cursor = 's-resize';
-        if (i == 6)
-            r_el.style.cursor = 'sw-resize';
-        if (i == 7)
-            r_el.style.cursor = 'w-resize';
-
-        $(r_el).attr({
-            id: 'c_' + (i + 1),
-            class: 'c_resize',
-        });
-        $(r_el).css({
-            position: 'absolute',
-            width: 10 + 'px',
-            height: 10 + 'px',
-            backgroundColor: 'black',
-            zIndex: 22,
-        });
-        $(r_el).addClass('resizer_off');
-
-        r_el.addEventListener('mousedown', function (event) {
-            event.stopPropagation();
-            initialiseResize(this, el);
-        })
-        resizer_array[i] = r_el;
-    }
-    displayResizer(el);
-}
-}
-
-function displayResizer(el) {
-    if (!(resizer_status[0])) {
-        var add_left = -5;
-        var add_top = -5;
-
-        if(el.id.includes('video_holder')){
-            $(el).removeAttr('controls');
-            console.log('controls removed')
-        }
-        var height=$(el).height();
-        var width=$(el).width();
-
-        for (var i = 0; i < 8; i++) {
-            el.appendChild(resizer_array[i]);
-
-            if (i < 3 && i >= 1) {
-                add_left = add_left + (width/2);
-            }
-            else if (i >= 3 && i < 5) {
-                add_top = add_top + (height/ 2);
-            }
-            else if (i >= 5 && i < 7) {
-                add_left = add_left - (width/2);
-            }
-            else if (i == 7) {
-                add_top = add_top - (height/2);
-            }
-            resizer_array[i].style.top = add_top + 'px';
-            resizer_array[i].style.left = add_left + 'px';
-            $(resizer_array[i]).removeClass('resizer_off');
-            $(resizer_array[i]).addClass('resizer_on');
-            if(el.id.includes('video_holder') && (i+1)%2==0){
-                $(resizer_array[i]).removeClass('resizer_on');
-                $(resizer_array[i]).addClass('resizer_off');
-            }
-        }
-    }
-    resizer_status[0] = true;
-    resizer_status[1] = el.id;
-    el.contentEditable=false;
-    el.draggable=false;
-}
-
-
+//removes the resizer from the respective element.
 function removeResizer() {
 
     var el_resizer = document.getElementById(resizer_status[1]);
@@ -357,6 +362,7 @@ function removeResizer() {
 }
 
 
+//Incomplete.Doesnot work. manage the contents of a page(texts,images,videos,slideshows etc.)
 function content_manager(current_page, new_id) {
 
     var page_content = document.getElementById(current_page).children;
@@ -370,6 +376,8 @@ function content_manager(current_page, new_id) {
 }
 
 
+
+//Manages the pages. Insertions and Deletions of pages and updating the page number accordingly.
 function page_manager(current_page_id, new_page) {
 
     if(page_array.length==0){
@@ -448,6 +456,8 @@ function page_manager(current_page_id, new_page) {
 
 }
 
+
+//creates a div holding a form for uploading images and videos and makes an ajax request to the server.
 function uploadMedia(){
     count_media=count_media+1;
     var el = document.createElement('div');
@@ -528,6 +538,7 @@ function uploadMedia(){
 }
 
 
+//gets the media from the specified folder.
 function getMedia(){
     var file = document.getElementById('select_media').files[0].name;
     var media_div=document.createElement('div');
@@ -601,6 +612,9 @@ function getMedia(){
         media_div.addEventListener('dragstart', function (e) {
             drag(e);
        })
+        media_div.addEventListener('click', function (e) {
+         media_div.style.borderStyle='none';
+       })
        media_div.addEventListener('dblclick', function (e) {
            e.stopPropagation();
            createResizer(this);
@@ -612,7 +626,6 @@ function getMedia(){
         media_div.draggable=false;
         media_div.style.width=100+'%';
         media_div.style.height=100+'%';
-        //media_div.style.display='none';
         $(media_div).attr('class','slides'+slideshow_id);
         $(media_div).attr('class','active_slide');
         document.getElementById(active_slideshow).appendChild(media_div);
@@ -623,6 +636,8 @@ function getMedia(){
     
 }
 
+
+//creates a slide menu. Asks user whether to insert a video or an image in the slide.
 function createSlideMenu(slide_id){
     var slide_menu=document.createElement('div');
 
@@ -644,8 +659,8 @@ function createSlideMenu(slide_id){
         position:'absolute',
         width:100+'px',
         height:50+'px',
-        left:50+'px',
-        top:125+'px',
+        left:16+'%',
+        top:40+'%',
 
     });
     var video_button=document.createElement('button');
@@ -657,8 +672,8 @@ function createSlideMenu(slide_id){
         position:'absolute',
         width:100+'px',
         height:50+'px',
-        left:150+'px',
-        top:125+'px',
+        right:16+'%',
+        top:40+'%',
 
     });
     slide_menu.appendChild(img_button);
@@ -666,7 +681,7 @@ function createSlideMenu(slide_id){
     return slide_menu;
 }
 
-
+//updates the slideshow when a new slide is inserted or when the user moves across different slides.
 function updateSlideShow(dir){
 
     var slide_holder=document.getElementById(active_slideshow);
@@ -710,12 +725,13 @@ function updateSlideShow(dir){
 
 }
 
+
+//creates a slide holder div(slideshow).
 function SlideShowManager(){
 
     
     holder_adj='slide_'
     slideshow_id=slideshow_id+1;
-    slide_no=slide_no+1;
     var slide_holder=document.createElement('div');
     $(slide_holder).attr({
         id:'slide_holder'+slideshow_id,
@@ -744,14 +760,17 @@ function SlideShowManager(){
     left.id='left';
     $(left).css({
         position:'absolute',
-        top:$(slide_holder).height()/2-5+'px',
-        left:0,
+        bottom:5+'px',
+        left:40+'%',
         zIndex:50,
         cursor:'pointer'
     });
     left.innerHTML='&#10094;';
     $(left).click(function(e){
         e.stopPropagation();
+        if($(slide_holder).has('.c_resize').length!=0){
+            removeResizer();
+        }
         updateSlideShow(-1);
     });
 
@@ -759,14 +778,17 @@ function SlideShowManager(){
     right.id='right';
     $(right).css({
         position:'absolute',
-        top:$(slide_holder).height()/2-5+'px',
-        right:0,
+        bottom:5+'px',
+        right:40+'%',
         zIndex:50,
         cursor:'pointer'
     });
     right.innerHTML='&#10095;';
     $(right).click(function(e){
         e.stopPropagation();
+        if($(slide_holder).has('.c_resize').length!=0){
+            removeResizer();
+        }
         updateSlideShow(1);
     });
 
@@ -778,7 +800,9 @@ function SlideShowManager(){
 
     active_slideshow=slide_holder.id;
 
+
     $(slide_holder).click(function(e){
+        slide_holder.style.borderStyle='none';
         if(e.target.id=='img_button'){
             img_id=img_id+1;
             media_type='img';
@@ -799,11 +823,15 @@ function SlideShowManager(){
     
 }
 
+// triggered when an ajax request is completed.
 $(document).ajaxComplete(function(){
     getMedia();
 });
 
 
+
+//listens to all the click events occuring in the editor area and keeps the track of the element that is clicked. Also used for disabling the resizer on any element
+//and hiding the fontsize and font style menu bar
 $('#main').on('click', function (event) {
 
     if (resizer_status[0]) {
@@ -830,9 +858,23 @@ $('#main').on('click', function (event) {
         delete_item = 4;
         active_media_id = event.target.id;
     }
-    if (event.target.id.includes('slide')) {
+    
+    if (event.target.id.includes('slide')||event.target.className.includes('slide')) {
         delete_item = 5;
-        active_slideshow = event.target.id;
+        if(event.target.id.includes('slide_holder'))
+        active_slideshow=event.target.id;
+
+        else if(event.target.id.includes('slide_parent')||event.target.className.includes('slide')){
+            if(event.target.id!='')
+            active_slideshow=$('#'+event.target.id).parents().eq(0)[0].id;
+            else
+            active_slideshow=$('.'+event.target.className.substring(0,6)).parents().eq(0)[0].id;
+        }
+
+        else
+        active_slideshow = $('#'+event.target.id).parents().eq(1)[0].id;
+
+        console.log(active_slideshow);
     }
 
     if ($('.menuListSize,.menuSize,.size-button').hasClass('visible')) {
@@ -845,7 +887,7 @@ $('#main').on('click', function (event) {
     }
 })
 
-
+//?
 $('#Fsize').on('click', function (event) {
     event.stopPropagation();
     $(this).keydown(function (event) {
@@ -857,7 +899,7 @@ $('#Fsize').on('click', function (event) {
 
 
 
-
+// common event handler for all the click events occuring on the toolbar. based on the id of the target button carries out specific action.
 $("#toolbar").on('click', function (event) {
     if (event.originalEvent != undefined)
         var _id = event.target.id;
@@ -929,7 +971,7 @@ $("#toolbar").on('click', function (event) {
 });
 
 
-
+// common event handler for all the click events occuring on the widgetbar. based on the id of the target button carries out specific action.
 $('#widgetbar').on('click', function (event) {
     var _id = event.target.id;
 
@@ -953,7 +995,7 @@ $('#widgetbar').on('click', function (event) {
         $(el).css({
             position: 'absolute',
             backgroundColor: 'white',
-            width: 800 + 'px',
+            width:800+'px',
             height: 1000 + 'px',
             borderStyle: 'solid',
             borderWidth: 1 + 'px',
@@ -996,6 +1038,7 @@ $('#widgetbar').on('click', function (event) {
             createResizer(this);
         })
         el.addEventListener('click', function (e) {
+            el.style.borderStyle='none';
             if (resizer_status[0])
                 removeResizer();
         })

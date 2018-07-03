@@ -83,6 +83,16 @@ app.post('/upload/video',function(req,res){
     });
 })
 
+app.post('/upload/ebook',function(req,res){
+    req.setEncoding('utf8')
+    req.on('data',function(chunk){
+
+        fs.writeFile('test_ebook.html',chunk,function(err){
+            if(err)console.log(err);
+        })
+    })
+})
+
 app.listen(8000,function(){
     console.log('server running on port: 8000');
 })
