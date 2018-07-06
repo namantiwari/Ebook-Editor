@@ -93,6 +93,6 @@ app.post('/upload/ebook',function(req,res){
     })
 })
 
-app.listen(8000,function(){
+app.listen(8000,'192.168.34.175',function(){
     console.log('server running on port: 8000');
 })

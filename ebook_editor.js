@@ -189,7 +189,7 @@ function displayResizer(el) {
     resizer_status[0] = true;
     resizer_status[1] = el.id;
     el.style.borderStyle='dashed';
-    el.contentEditable=false;
+    //el.contentEditable=false;
     el.draggable=false;
 }
 
@@ -210,7 +210,7 @@ function initialiseResize(tar_el, parent_el) {
 function startResize(event, tar_id, parent_el) {
 
     event.stopPropagation();
-    var add_left = -5;
+    var add_left = -5;                                                   //the loop updates the position of the resizer divs as the element is resized. 
     var add_top = -5;
     for (var i = 0; i < 8; i++) {
         parent_el.appendChild(resizer_array[i]);
@@ -355,6 +355,7 @@ function removeResizer() {
         el_resizer.removeChild(resizer_array[i]);
     }
     resizer_status[0] = false;
+    resizer_status[1]= 'none';
     el_resizer.draggable=true;
     if(el_resizer.id.includes('text_holder'))
         el_resizer.contentEditable=true;
@@ -362,7 +363,7 @@ function removeResizer() {
 }
 
 
-//Incomplete.Doesnot work. manage the contents of a page(texts,images,videos,slideshows etc.)
+//Incomplete.Not Called.Doesnot work. manage the contents of a page(texts,images,videos,slideshows etc.)
 function content_manager(current_page, new_id) {
 
     var page_content = document.getElementById(current_page).children;
@@ -816,7 +817,7 @@ function SlideShowManager(){
             $('.slide'+parseInt(slide_holder.id.substring(slide_holder.id.length-1))).remove();
         }
         
-        if(resizer_status[0])
+        if(resizer_status[1]!='none')
         removeResizer();
     });
     delete_item=5;
@@ -834,7 +835,7 @@ $(document).ajaxComplete(function(){
 //and hiding the fontsize and font style menu bar
 $('#main').on('click', function (event) {
 
-    if (resizer_status[0]) {
+    if (resizer_status[1]!='none') {
         removeResizer();
     }
 
@@ -887,15 +888,7 @@ $('#main').on('click', function (event) {
     }
 })
 
-//?
-$('#Fsize').on('click', function (event) {
-    event.stopPropagation();
-    $(this).keydown(function (event) {
-        if (event.which == 13) {
-            $("#toolbar").trigger('click');
-        }
-    })
-})
+
 
 
 
@@ -976,15 +969,8 @@ $('#widgetbar').on('click', function (event) {
     var _id = event.target.id;
 
     if (_id == 'new_page') {
-        count_page = count_page + 1;
         page_id = page_id + 1;
         delete_item = 0;
-
-        if (count_page > 1) {
-            $('html').css('height', ($('html').css('height')) * count_page + 'px');
-            $('body').css('height', ($('body').css('height')) * count_page + 'px');
-            $('#main').css('height', ($('#main').css('height')) * count_page + 'px');
-        }
 
         var el = document.createElement('div');
         $(el).attr({
@@ -995,12 +981,12 @@ $('#widgetbar').on('click', function (event) {
         $(el).css({
             position: 'absolute',
             backgroundColor: 'white',
-            width:800+'px',
-            height: 1000 + 'px',
+            width:1024+'px',
+            height: 600+ 'px',
             borderStyle: 'solid',
             borderWidth: 1 + 'px',
             marginTop: 100 + 'px',
-            left:500+'px'
+            left:25+'%'
 
         });
         el.addEventListener('dragover',function(e){
@@ -1039,7 +1025,7 @@ $('#widgetbar').on('click', function (event) {
         })
         el.addEventListener('click', function (e) {
             el.style.borderStyle='none';
-            if (resizer_status[0])
+            if (resizer_status[1]!='none')
                 removeResizer();
         })
         el.addEventListener('keydown', function (e) {
@@ -1084,15 +1070,19 @@ $('#widgetbar').on('click', function (event) {
         }
         else if (delete_item == 2) {
             $('#parent_'+active_img_id).remove();
+            resizer_status[0] = false;
         }
         else if (delete_item == 3) {
             $('#parent_'+active_video_id).remove();
+            resizer_status[0] = false;
         }
         else if (delete_item == 4) {
             $('#'+active_media_id).remove();
+            resizer_status[0] = false;
         }
         else if (delete_item == 5) {
             $('#'+active_slideshow).remove();
+            resizer_status[0] = false;
         }
     }
 });
